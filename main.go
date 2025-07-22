@@ -10,6 +10,20 @@ import (
 const accountBalanceFile = "balance.txt"
 const currentBudgetFile = "budget.txt"
 
+func getBudgetFromFile() (float64, error) {
+	data, err := os.ReadFile(currentBudgetFile)
+	if err != nil {
+		return 0, errors.New("Failed to find budget file")
+	}
+	bugetText := string(data)
+	budget, err := strconv.ParseFloat(bugetText, 64)
+	if err != nil {
+		return 0, errors.New("Failed to parse budget value to float")
+	}
+
+	return budget, nil
+}
+
 func writeBudgetToFile(budget float64) {
 	budgetText := fmt.Sprint(budget)
 	os.WriteFile(currentBudgetFile, []byte(budgetText), 0644)
@@ -42,16 +56,18 @@ func main() {
 		fmt.Println("------------------")
 	}
 	var setBudget float64
+	setBudget, err = getBudgetFromFile()
+	if err != nil {
+		fmt.Println("ERROR")
+		fmt.Println(err)
+		fmt.Println("------------------")
+	}
 	fmt.Println("Welcome to GoSaver v1.0")
 	fmt.Println(separator)
 
 	for {
-		fmt.Println("What do you want to do?")
-		fmt.Println("1. Deposit")
-		fmt.Println("2. Withdraw")
-		fmt.Println("3. Set Budget")
-		fmt.Println("4. Check Balance and Budget Status")
-		fmt.Println("5. Exit")
+
+		operations()
 
 		var choice int
 		fmt.Print("Your choice: ")
@@ -100,16 +116,28 @@ func main() {
 				//return
 				continue
 			}
+			if setBudget > accountBalance {
+				fmt.Println("Invalid amount! Not enough money in your bank account")
+				return
+			}
 
 			fmt.Println("Your set budget:", setBudget)
 			writeBudgetToFile(setBudget)
 		case 4:
-			fmt.Println(accountBalance)
-			fmt.Println(setBudget)
+			fmt.Println("Your account balance:", accountBalance)
+			fmt.Println("Your set budget:", setBudget)
 		default:
 			fmt.Println("Goodbye!")
 			return
 		}
 	}
 
+}
+func operations() {
+	fmt.Println("What do you want to do?")
+	fmt.Println("1. Deposit")
+	fmt.Println("2. Withdraw")
+	fmt.Println("3. Set Budget")
+	fmt.Println("4. Check Balance and Budget Status")
+	fmt.Println("5. Exit")
 }
