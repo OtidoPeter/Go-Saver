@@ -15,8 +15,8 @@ func getBudgetFromFile() (float64, error) {
 	if err != nil {
 		return 0, errors.New("Failed to find budget file")
 	}
-	bugetText := string(data)
-	budget, err := strconv.ParseFloat(bugetText, 64)
+	budgetText := string(data)
+	budget, err := strconv.ParseFloat(budgetText, 64)
 	if err != nil {
 		return 0, errors.New("Failed to parse budget value to float")
 	}
@@ -133,11 +133,4 @@ func main() {
 	}
 
 }
-func operations() {
-	fmt.Println("What do you want to do?")
-	fmt.Println("1. Deposit")
-	fmt.Println("2. Withdraw")
-	fmt.Println("3. Set Budget")
-	fmt.Println("4. Check Balance and Budget Status")
-	fmt.Println("5. Exit")
-}
+
