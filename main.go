@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"gosaver/example.gosaver/fileops"
 	"os"
 	"strconv"
 )
@@ -29,27 +30,9 @@ func writeBudgetToFile(budget float64) {
 	os.WriteFile(currentBudgetFile, []byte(budgetText), 0644)
 }
 
-func getFloatFromFile(fileName string) (float64, error) {
-	data, err := os.ReadFile(fileName)
-	if err != nil {
-		return 1000, errors.New("Failed to find file")
-	}
-	valueText := string(data)
-	value, err := strconv.ParseFloat(valueText, 64)
-	if err != nil {
-		return 1000, errors.New("Failed to parse value to float")
-	}
-	return value, nil
-}
-
-func writeFloatToFile(value float64, fileName string) {
-	valueText := fmt.Sprint(value)
-	os.WriteFile(fileName, []byte(valueText), 0644)
-}
-
 func main() {
 	const separator = "-----------------------"
-	var accountBalance, err = getFloatFromFile(accountBalanceFile)
+	var accountBalance, err = fileops.GetFloatFromFile(accountBalanceFile)
 	if err != nil {
 		fmt.Println("ERROR")
 		fmt.Println(err)
@@ -87,7 +70,7 @@ func main() {
 
 			accountBalance += depositAmount
 			fmt.Println("Your updated account balance:", accountBalance)
-			writeFloatToFile(accountBalance, accountBalanceFile)
+			fileops.WriteFloatToFile(accountBalance, accountBalanceFile)
 		case 2:
 			var withdrawalAmount float64
 			fmt.Print("Your withdrawal amount: ")
@@ -106,7 +89,7 @@ func main() {
 
 			accountBalance -= withdrawalAmount
 			fmt.Println("Your updated account balance:", accountBalance)
-			writeFloatToFile(accountBalance, accountBalanceFile)
+			fileops.WriteFloatToFile(accountBalance, accountBalanceFile)
 		case 3:
 			fmt.Print("Your set budget: ")
 			fmt.Scan(&setBudget)
@@ -118,7 +101,8 @@ func main() {
 			}
 			if setBudget > accountBalance {
 				fmt.Println("Invalid amount! Not enough money in your bank account")
-				return
+				//return
+				continue
 			}
 
 			fmt.Println("Your set budget:", setBudget)
